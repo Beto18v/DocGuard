@@ -45,7 +45,7 @@
       errorInsufficientSentences:
         "El documento no contiene suficientes oraciones completas para analizar.",
       errorGeneric: "Ocurrió un error al analizar el documento.",
-      footerText: "Hecho con cariño por",
+      footerText: "Desarrollado por",
       reportTitle: "═══ REPORTE DOCGUARD ═══",
       reportDate: "Fecha",
       reportDoc: "Documento",
@@ -95,7 +95,7 @@
       errorInsufficientSentences:
         "The document does not contain enough complete sentences to analyze.",
       errorGeneric: "An error occurred while analyzing the document.",
-      footerText: "Made with care by",
+      footerText: "Developed by",
       reportTitle: "═══ DOCGUARD REPORT ═══",
       reportDate: "Date",
       reportDoc: "Document",
