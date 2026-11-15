@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "DocGuard",
+  "version": "2.0.0",
+  "description": "Free originality auditor for Google Docs — hybrid local + web engine, no API keys.",
+  "permissions": ["activeTab", "tabs", "sidePanel"],
+  "host_permissions": [
+    "https://docs.google.com/*",
+    "https://*.googleusercontent.com/*",
+    "https://html.duckduckgo.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "Open DocGuard",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}
