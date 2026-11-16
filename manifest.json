@@ -7,6 +7,8 @@
   "host_permissions": [
     "https://docs.google.com/*",
     "https://*.googleusercontent.com/*",
+    "https://*.wikipedia.org/*",
+    "https://api.openalex.org/*",
     "https://html.duckduckgo.com/*"
   ],
   "background": {

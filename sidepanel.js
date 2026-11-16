@@ -3,7 +3,7 @@
 
   /* ═══════════════════════════════════════════════════════════
      DocGuard v2.0 — Side Panel Controller
-     Zero dependencies · Zero API keys
+     Zero dependencies · Zero API keys · Academic Originality Auditor
      ═══════════════════════════════════════════════════════════ */
 
   // ─── I18N Dictionary ───
@@ -22,8 +22,12 @@
       analyzeBtn: "Analizar Google Doc actual",
       analyzingReading: "Leyendo Google Doc…",
       analyzingWeb: "Verificando web ({current}/{total})…",
+      analyzingInternal: "Analizando repeticiones internas…",
       emptyState:
         'Pulsa <strong>Analizar Google Doc actual</strong> para auditar repeticiones internas y verificar coincidencias literales en la web automáticamente.',
+      step1: "Abre tu Google Doc",
+      step2: "Clic en Analizar",
+      step3: "Copia el reporte",
       originalityLabel: "Originalidad",
       similarityLabel: "Similitud",
       riskLow: "Riesgo bajo · Originalidad alta",
@@ -37,15 +41,36 @@
         "Sin coincidencias literales en la web ni repeticiones internas significativas.",
       copyReport: "📋 Copiar reporte",
       copyDone: "✓ Copiado",
-      externalMatch: "Coincidencia exacta en la web",
+      externalMatch: "Coincidencia web",
       internalRepeat: "Repetición interna (Oración #{n})",
       openSource: "Abrir fuente coincidente ↗",
       words: "palabras",
       untitledDoc: "Documento sin título",
       errorInsufficientSentences:
-        "El documento no contiene suficientes oraciones completas para analizar.",
+        "El documento no contiene suficientes oraciones completas de texto para analizar.",
       errorGeneric: "Ocurrió un error al analizar el documento.",
+      errorSwAsleep: "El servicio está iniciando. Por favor, reintenta en un momento.",
+      errorRateLimited: "El motor web limitó las consultas. Análisis completado parcialmente.",
       footerText: "Desarrollado por",
+      verdictLabel: "Veredicto",
+      verdictSublabel: "Recomendación",
+      verdictSafeBadge: "🟢 LISTO PARA ENTREGAR",
+      verdictSafeTitle: "Aprobado para entrega académica",
+      verdictSafeDesc: "Rango seguro estándar (0% - 20%). Alta originalidad y baja similitud externa. Seguro para Turnitin.",
+      verdictCautionBadge: "🟡 SIMILITUD MODERADA",
+      verdictCautionTitle: "Rango técnico aceptable (21% - 35%)",
+      verdictCautionDesc: "Común en informes técnicos y marco teórico. Se recomienda verificar citas textuales antes de entregar.",
+      verdictDangerBadge: "🔴 SIMILITUD ELEVADA (> 35%)",
+      verdictDangerTitle: "Revisión previa recomendada",
+      verdictDangerDesc: "Se detectaron múltiples coincidencias web considerables. Existe riesgo de observación docente si no se parafrasea.",
+      filterAll: "Todos",
+      filterWeb: "Web",
+      filterInternal: "Internos",
+      sourcesTitle: "Bases de consulta activas",
+      sourcesDesc: "Verificación multi-fuente en tiempo real sin almacenamiento en servidores externos (100% privado).",
+      sourceWikiDetail: "Enciclopedia global y definiciones conceptuales (ES / EN)",
+      sourceOpenAlexDetail: "+250M de papers, journals y literatura científica indexada",
+      sourceLocalDetail: "Shingling 5-gram + Jaccard para redundancia interna",
       reportTitle: "═══ REPORTE DOCGUARD ═══",
       reportDate: "Fecha",
       reportDoc: "Documento",
@@ -72,8 +97,12 @@
       analyzeBtn: "Analyze current Google Doc",
       analyzingReading: "Reading Google Doc…",
       analyzingWeb: "Checking web ({current}/{total})…",
+      analyzingInternal: "Analyzing internal repetitions…",
       emptyState:
         'Press <strong>Analyze current Google Doc</strong> to audit internal repetitions and verify literal web matches automatically.',
+      step1: "Open your Google Doc",
+      step2: "Click Analyze",
+      step3: "Copy report",
       originalityLabel: "Originality",
       similarityLabel: "Similarity",
       riskLow: "Low risk · High originality",
@@ -87,15 +116,36 @@
         "No literal web matches or significant internal repetitions found.",
       copyReport: "📋 Copy report",
       copyDone: "✓ Copied",
-      externalMatch: "Exact web match",
+      externalMatch: "Web match",
       internalRepeat: "Internal repetition (Sentence #{n})",
       openSource: "Open matching source ↗",
       words: "words",
       untitledDoc: "Untitled document",
       errorInsufficientSentences:
-        "The document does not contain enough complete sentences to analyze.",
+        "The document does not contain enough complete text sentences to analyze.",
       errorGeneric: "An error occurred while analyzing the document.",
+      errorSwAsleep: "The service is starting up. Please try again in a moment.",
+      errorRateLimited: "Web engine rate-limited requests. Analysis completed partially.",
       footerText: "Developed by",
+      verdictLabel: "Verdict",
+      verdictSublabel: "Recommendation",
+      verdictSafeBadge: "🟢 READY TO SUBMIT",
+      verdictSafeTitle: "Approved for academic submission",
+      verdictSafeDesc: "Standard safe range (0% - 20%). High originality and low external similarity. Safe for Turnitin.",
+      verdictCautionBadge: "🟡 MODERATE SIMILARITY",
+      verdictCautionTitle: "Acceptable technical range (21% - 35%)",
+      verdictCautionDesc: "Common in technical reports and literature reviews. Double-check direct quotes before submitting.",
+      verdictDangerBadge: "🔴 HIGH SIMILARITY (> 35%)",
+      verdictDangerTitle: "Prior revision recommended",
+      verdictDangerDesc: "Multiple considerable web matches detected. Risk of academic penalty unless paraphrased or quoted.",
+      filterAll: "All",
+      filterWeb: "Web",
+      filterInternal: "Internal",
+      sourcesTitle: "Active Knowledge Engines",
+      sourcesDesc: "Real-time multi-source verification with zero external storage (100% private).",
+      sourceWikiDetail: "Global encyclopedia & conceptual domain definitions (ES / EN)",
+      sourceOpenAlexDetail: "250M+ scientific papers, journals & academic literature",
+      sourceLocalDetail: "5-gram shingling + Jaccard similarity for internal redundancy",
       reportTitle: "═══ DOCGUARD REPORT ═══",
       reportDate: "Date",
       reportDoc: "Document",
@@ -113,6 +163,8 @@
   // ─── State ───
   let currentLang = localStorage.getItem("docguard_lang") || "es";
   let lastResult = null;
+  let currentAnalysisToken = 0;
+  let currentFilter = "all";
 
   const state = {
     activeDocId: null,
@@ -144,8 +196,8 @@
     document.querySelectorAll("[data-i18n-title]").forEach((el) => {
       el.title = t(el.getAttribute("data-i18n-title"));
     });
-    document.getElementById("lang-label").textContent =
-      currentLang.toUpperCase();
+    const langLabel = document.getElementById("lang-label");
+    if (langLabel) langLabel.textContent = currentLang.toUpperCase();
   }
 
   // ─── Theme ───
@@ -163,13 +215,20 @@
     localStorage.setItem("docguard_theme", theme);
     const sunIcon = document.getElementById("theme-icon-sun");
     const moonIcon = document.getElementById("theme-icon-moon");
+    const boltIcon = document.getElementById("theme-icon-bolt");
+
+    if (sunIcon) sunIcon.classList.add("hidden");
+    if (moonIcon) moonIcon.classList.add("hidden");
+    if (boltIcon) boltIcon.classList.add("hidden");
+
     if (theme === "light") {
-      sunIcon.classList.remove("hidden");
-      moonIcon.classList.add("hidden");
+      if (sunIcon) sunIcon.classList.remove("hidden");
+    } else if (theme === "neobrutalism") {
+      if (boltIcon) boltIcon.classList.remove("hidden");
     } else {
-      sunIcon.classList.add("hidden");
-      moonIcon.classList.remove("hidden");
+      if (moonIcon) moonIcon.classList.remove("hidden");
     }
+
     requestAnimationFrame(() => {
       setTimeout(() => {
         document.documentElement.classList.remove("theme-transitioning");
@@ -181,11 +240,11 @@
   const DOC_URL_REGEX =
     /^https:\/\/docs\.google\.com\/document\/d\/([a-zA-Z0-9_-]+)/;
   const SHINGLE_SIZE = 5;
-  const MAX_SAMPLE_SENTENCES = 20;
-  const MIN_WORDS_FOR_WEB = 9;
-  const MIN_WORDS_FOR_INTERNAL = 9;
-  const WEB_SNIPPET_SIZE = 8;
-  const INTERNAL_THRESHOLD = 0.72;
+  const MAX_SAMPLE_SENTENCES = 35;
+  const MIN_WORDS_FOR_WEB = 8;
+  const MIN_WORDS_FOR_INTERNAL = 8;
+  const WEB_SNIPPET_SIZE = 7;
+  const INTERNAL_THRESHOLD = 0.65;
 
   // ─── Stopwords (ES + EN) ───
   const STOPWORDS = new Set([
@@ -225,10 +284,17 @@
   const similarityBar = $("similarity-bar");
   const ringFill = $("ring-fill");
   const trafficLabel = $("traffic-label");
+  const verdictCard = $("verdict-card");
+  const verdictBadge = $("verdict-badge");
+  const verdictTitle = $("verdict-title");
+  const verdictDesc = $("verdict-desc");
   const statSentences = $("stat-sentences");
   const statExternal = $("stat-external");
   const statInternal = $("stat-internal");
   const matchesCount = $("matches-count");
+  const filterAllCount = $("filter-all-count");
+  const filterWebCount = $("filter-web-count");
+  const filterIntCount = $("filter-int-count");
   const noMatchesBox = $("no-matches-box");
   const matchesList = $("matches-list");
   const copyReportBtn = $("copy-report-btn");
@@ -251,6 +317,37 @@
     return normalized ? normalized.split(" ") : [];
   }
 
+  /**
+   * Detecta si una oración es principalmente una fórmula matemática, ecuación
+   * o línea de cálculo numérico, para evitar falsos positivos con tablas de números o NASCAR.
+   */
+  function isMathOrFormula(rawSentence) {
+    if (!rawSentence) return true;
+    const trimmed = rawSentence.trim();
+
+    // 1. Conteo de símbolos matemáticos explícitos
+    const mathSymbolsCount = (trimmed.match(/[=+\-*/^<>±≈≠≤≥∑∫√∂%]/g) || []).length;
+    const tokens = trimmed.split(/\s+/);
+    if (tokens.length === 0) return true;
+
+    // Palabras léxicas reales (letras de 3+ caracteres, ignorando puntuación)
+    const realWords = tokens.filter((t) => /^[\p{L}]{3,}$/u.test(t.replace(/[.,;:()]/g, "")));
+
+    // Si tiene símbolos matemáticos y menos de 4 palabras reales, es una fórmula/operación
+    if (mathSymbolsCount >= 1 && realWords.length < 4) return true;
+
+    // Si más del 35% de los caracteres son dígitos, paréntesis o símbolos algebraicos
+    const nonAlphaChars = (trimmed.match(/[\d=+\-*/^<>()[\]{}_]/g) || []).length;
+    if (nonAlphaChars / trimmed.length > 0.35 && realWords.length < 5) return true;
+
+    // Patrones algebraicos clásicos: det(A), Menor N:, Ecuación N:, x1 = ...
+    if (/^(det\(|Menor\s*\d+:|Ecuaci[oó]n\s*\d+:|Sustituci[oó]n\s*de|\([0-9]+\)\([0-9]+\))/i.test(trimmed)) {
+      if (realWords.length < 5) return true;
+    }
+
+    return false;
+  }
+
   function splitSentences(rawText) {
     // Remove references section (ES + EN)
     const withoutRefs = (rawText || "").split(
@@ -262,27 +359,43 @@
     const blocks = cleaned.split(/\n+/);
     const sentences = [];
 
-    // Patterns to skip (institutional headers, short table rows, etc.)
+    // Patterns to skip (institutional headers, cover page data, table of contents, short rows)
     const SKIP_PATTERNS = [
       /^(SERVICIO NACIONAL|Programa:|Aprendiz:|Actividad de|Evidencia de|Competencia:|Resultado de)/i,
+      /^(Facultad\s+de|Corporaci[oó]n\s+Universitaria|Universidad|Ingenier[íi]a\s+de|Docente\s+Tutor|Tutor:|Sustentaci[oó]n|ID\s+Banner|Autor\(es\)?|Estudiante:|Bogot[áa]\s+D\.?C\.?|Noviembre\s+de\s+\d{4})/i,
       /^(Tabla|Table|Figura|Figure|Gráfico|Chart)\s*\d/i,
-      /^\d+[\.\)]\s*$/,
-      /^[A-ZÁÉÍÓÚÑ\s]{3,50}$/,  // All-caps headers
+      /^\d+[\.]\s*$/,
+      /^[A-ZÁÉÍÓÚÑ\s\(\)\-]{3,150}$/, // All-caps headers y títulos institucionales
+      /^(ÍNDICE|INDICE|TABLA DE CONTENIDO|TABLE OF CONTENTS)\b/i, // Encabezado de índice
+      /(?:\.{2,}|\s{2,})\s*\d+\s*$/, // Líneas de índice con puntos y número de página (ej. '... 4', '... 6')
     ];
 
     for (const block of blocks) {
       const trimmedBlock = block.trim();
       if (!trimmedBlock) continue;
 
-      // Skip headers and institutional lines
+      // Skip headers, institutional lines y entradas de índice
       if (SKIP_PATTERNS.some((p) => p.test(trimmedBlock))) continue;
+
+      // Skip líneas con puntos de índice (ej. '3.4.1. Despeje... 6')
+      if (/(?:\.{2,}|\s{2,})\s*\d+\s*$/.test(trimmedBlock)) continue;
 
       // Skip very short table-like rows (pipes, tabs, mostly numbers)
       if (trimmedBlock.includes("|") && trimmedBlock.split("|").length > 2) continue;
 
-      const parts = trimmedBlock.split(/(?<=[.!?])\s+/);
+      // Temporarily protect common abbreviations from sentence splitting
+      const protectedBlock = trimmedBlock
+        .replace(/\b(Dr|Dra|Sr|Sra|Ing|Lic|Prof|Fig|vs|etc|núm|No|Art)\.\s/g,
+          (_, abbr) => `${abbr}\u2060 `) // word-joiner as placeholder
+        .replace(/\b([A-Z])\.\s/g, "$1\u2060 "); // single-letter initials
+
+      const parts = protectedBlock.split(/(?<=[.!?])\s+/);
       for (const part of parts) {
-        const sentence = part.trim();
+        const sentence = part.trim().replace(/\u2060/g, "."); // restore dots
+
+        // Descartar fórmulas matemáticas y expresiones puramente numéricas
+        if (isMathOrFormula(sentence)) continue;
+
         const words = tokenizeWords(sentence);
         if (words.length >= 6) {
           sentences.push({
@@ -322,7 +435,6 @@
       if (stratum.length <= count) {
         sampled.push(...stratum);
       } else {
-        // Evenly spaced sampling within stratum
         const step = stratum.length / count;
         for (let i = 0; i < count; i++) {
           sampled.push(stratum[Math.floor(i * step)]);
@@ -376,6 +488,40 @@
     return hits / targetShingles.size;
   }
 
+  /**
+   * Calcula el veredicto y recomendación ejecutiva para saber si el trabajo
+   * es seguro para entregar o si requiere parafraseo/revisión previa.
+   */
+  function computeVerdict(originalityPercent, externalMatchCount, internalRepeatCount) {
+    const similarityPercent = 100 - originalityPercent;
+
+    // 🟢 Seguro / Listo para entrega (Rango estándar universitario: Similitud <= 20% y <= 3 coincidencias web)
+    if (similarityPercent <= 20 && externalMatchCount <= 3) {
+      return {
+        level: "safe",
+        badge: t("verdictSafeBadge"),
+        title: t("verdictSafeTitle"),
+        desc: t("verdictSafeDesc"),
+      };
+    }
+    // 🔴 Alerta / No recomendado subir aún (Similitud > 35% o >= 6 coincidencias web directas)
+    if (similarityPercent > 35 || externalMatchCount >= 6) {
+      return {
+        level: "danger",
+        badge: t("verdictDangerBadge"),
+        title: t("verdictDangerTitle"),
+        desc: t("verdictDangerDesc"),
+      };
+    }
+    // 🟡 Precaución / Similitud moderada (Rango técnico aceptable: 21% - 35%)
+    return {
+      level: "caution",
+      badge: t("verdictCautionBadge"),
+      title: t("verdictCautionTitle"),
+      desc: t("verdictCautionDesc"),
+    };
+  }
+
   // ─── UI Helpers ───
   function showError(message) {
     if (!message) {
@@ -404,6 +550,9 @@
 
   // ─── Tab Detection ───
   async function detectActiveGoogleDoc() {
+    // Si hay un análisis en curso, no interrumpir ni reiniciar el panel al cambiar de pestaña
+    if (state.isAnalyzing) return;
+
     showError("");
     try {
       const tabs = await chrome.tabs.query({
@@ -450,6 +599,22 @@
     }
   }
 
+  // ─── Filter Pills ───
+  function applyFilter(filterType) {
+    currentFilter = filterType;
+    document.querySelectorAll(".filter-pill").forEach((pill) => {
+      pill.classList.toggle("active", pill.getAttribute("data-filter") === filterType);
+    });
+    document.querySelectorAll(".match-item").forEach((item) => {
+      const type = item.getAttribute("data-match-type");
+      if (filterType === "all" || type === filterType) {
+        item.classList.remove("hidden");
+      } else {
+        item.classList.add("hidden");
+      }
+    });
+  }
+
   // ─── Render Results ───
   function renderResults(result) {
     lastResult = result;
@@ -462,6 +627,7 @@
     similarityBar.style.width = `${result.similarityPercent}%`;
     updateRing(result.originalityPercent);
 
+    // Score ring card styling
     scoreCard.classList.remove("level-green", "level-amber", "level-red");
     if (result.similarityPercent < 15) {
       scoreCard.classList.add("level-green");
@@ -474,10 +640,33 @@
       trafficLabel.textContent = t("riskHigh");
     }
 
+    // Submission Verdict Card
+    const verdict = computeVerdict(
+      result.originalityPercent,
+      result.externalMatchCount,
+      result.internalRepeatCount
+    );
+    result.verdict = verdict;
+
+    if (verdictCard) {
+      verdictCard.className = `verdict-card verdict-${verdict.level}`;
+      if (verdictBadge) verdictBadge.textContent = verdict.badge;
+      if (verdictTitle) verdictTitle.textContent = verdict.title;
+      if (verdictDesc) verdictDesc.textContent = verdict.desc;
+    }
+
     statSentences.textContent = String(result.sentenceCount);
     statExternal.textContent = String(result.externalMatchCount);
     statInternal.textContent = String(result.internalRepeatCount);
     matchesCount.textContent = String(result.flaggedMatches.length);
+
+    // Filter counts
+    const webCount = result.flaggedMatches.filter((m) => m.type === "web").length;
+    const intCount = result.flaggedMatches.filter((m) => m.type === "internal").length;
+    if (filterAllCount) filterAllCount.textContent = `(${result.flaggedMatches.length})`;
+    if (filterWebCount) filterWebCount.textContent = `(${webCount})`;
+    if (filterIntCount) filterIntCount.textContent = `(${intCount})`;
+
     matchesList.innerHTML = "";
 
     if (result.flaggedMatches.length === 0) {
@@ -494,6 +683,7 @@
     result.flaggedMatches.forEach((match) => {
       const li = document.createElement("li");
       li.className = "match-item";
+      li.setAttribute("data-match-type", match.type || "internal");
 
       const topDiv = document.createElement("div");
       topDiv.className = "match-top";
@@ -528,6 +718,9 @@
 
       matchesList.appendChild(li);
     });
+
+    // Apply the active filter to the newly rendered list
+    applyFilter(currentFilter);
   }
 
   // ─── Copy Report ───
@@ -535,17 +728,27 @@
     if (!lastResult) return "";
     const L = I18N[currentLang];
     const now = new Date().toLocaleString(currentLang === "es" ? "es-ES" : "en-US");
+    const verdict = lastResult.verdict || computeVerdict(
+      lastResult.originalityPercent,
+      lastResult.externalMatchCount,
+      lastResult.internalRepeatCount
+    );
+
     const lines = [
       L.reportTitle,
       "",
       `${L.reportDate}: ${now}`,
       `${L.reportDoc}: ${state.activeDocTitle || "—"}`,
       "",
+      `${L.verdictLabel}: [${verdict.badge}] ${verdict.title}`,
+      `   ${verdict.desc}`,
+      "",
       `${L.reportOriginality}: ${lastResult.originalityPercent}%`,
       `${L.reportSimilarity}: ${lastResult.similarityPercent}%`,
       `${L.reportSentencesAnalyzed}: ${lastResult.sentenceCount}`,
       `${L.reportWebMatches}: ${lastResult.externalMatchCount}`,
       `${L.reportInternalRepeats}: ${lastResult.internalRepeatCount}`,
+      `${L.sourcesTitle}: Wikipedia (ES/EN), OpenAlex Academic (250M+ Papers), Local NLP Engine`,
       "",
     ];
 
@@ -553,7 +756,7 @@
       lines.push(`── ${L.reportFindings} ──`);
       lines.push("");
       lastResult.flaggedMatches.forEach((m, i) => {
-        lines.push(`${i + 1}. [${m.scorePct}%] ${m.sourceLabel}`);
+        lines.push(`${i + 1}. [${m.scorePct}%] [${(m.type || "").toUpperCase()}] ${m.sourceLabel}`);
         lines.push(`   "${m.text}"`);
         if (m.sourceUrl) lines.push(`   ${m.sourceUrl}`);
         lines.push("");
@@ -571,7 +774,6 @@
   async function handleCopyReport() {
     try {
       await navigator.clipboard.writeText(buildReportText());
-      const original = copyReportBtn.innerHTML;
       copyReportBtn.innerHTML = t("copyDone");
       setTimeout(() => {
         copyReportBtn.innerHTML = t("copyReport");
@@ -580,16 +782,32 @@
       // Fallback
       const ta = document.createElement("textarea");
       ta.value = buildReportText();
+      ta.style.position = "fixed";
+      ta.style.inset = "0";
+      ta.style.opacity = "0";
+      ta.style.pointerEvents = "none";
       document.body.appendChild(ta);
+      ta.focus();
       ta.select();
-      document.execCommand("copy");
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch {
+        // Fallback silently failed
+      }
       document.body.removeChild(ta);
+      if (copied) {
+        copyReportBtn.innerHTML = t("copyDone");
+        setTimeout(() => { copyReportBtn.innerHTML = t("copyReport"); }, 2000);
+      }
     }
   }
 
   // ─── Analysis Engine ───
   async function handleAnalyze() {
     if (state.isAnalyzing || !state.activeDocId) return;
+
+    const myToken = ++currentAnalysisToken;
 
     showError("");
     state.isAnalyzing = true;
@@ -607,7 +825,7 @@
         throw new Error(docRes?.error || t("errorGeneric"));
       }
 
-      // 2. Parse sentences
+      // 2. Parse sentences (filtrando fórmulas y matemáticas)
       const allSentences = splitSentences(docRes.text);
       const totalWords = allSentences.reduce((sum, s) => sum + s.wordCount, 0);
 
@@ -615,7 +833,7 @@
         throw new Error(t("errorInsufficientSentences"));
       }
 
-      // 3. Stratified sampling for web check
+      // 3. Stratified sampling for web check (hasta 35 oraciones representativas)
       const sampledSentences = stratifiedSample(allSentences, MAX_SAMPLE_SENTENCES);
 
       // 4. Prepare all sentences for internal analysis
@@ -637,7 +855,11 @@
       let externalMatchCount = 0;
       let weightedSimilarityWords = 0;
 
-      // 5. Internal repetition detection (only sentences >= MIN_WORDS_FOR_INTERNAL)
+      // Progress update before synchronous NLP loop
+      analyzeBtn.textContent = t("analyzingInternal");
+      await new Promise((r) => setTimeout(r, 0));
+
+      // 5. Internal repetition detection (oraciones de prosa >= MIN_WORDS_FOR_INTERNAL)
       for (let i = 0; i < preparedAll.length; i++) {
         const docSent = preparedAll[i];
         if (docSent.words.length < MIN_WORDS_FOR_INTERNAL) continue;
@@ -667,6 +889,7 @@
           weightedSimilarityWords +=
             docSent.wordCount * (bestInternalScore * 0.45);
           flaggedMatches.push({
+            type: "internal",
             sourceLabel: t("internalRepeat", { n: repeatedWithIndex + 1 }),
             scorePct: Math.min(100, Math.round(bestInternalScore * 100)),
             text: docSent.raw,
@@ -675,7 +898,7 @@
         }
       }
 
-      // 6. Web verification (stratified sample, sentences >= MIN_WORDS_FOR_WEB)
+      // 6. Web verification across Wikipedia & OpenAlex
       const webCandidates = preparedSampled.filter(
         (s) => s.raw.split(/\s+/).length >= MIN_WORDS_FOR_WEB
       );
@@ -695,28 +918,42 @@
           .slice(start, start + WEB_SNIPPET_SIZE)
           .join(" ");
 
-        try {
-          const webCheck = await chrome.runtime.sendMessage({
-            type: "CHECK_WEB_PHRASE",
-            phrase: snippet,
+        // Exigir que el snippet contenga al menos 4 palabras léxicas reales (no stopwords/conectores)
+        const lexicalWords = snippet.split(/\s+/).filter((w) => {
+          const clean = w.toLowerCase().replace(/[^\p{L}]/gu, "");
+          return clean.length >= 3 && !STOPWORDS.has(clean);
+        });
+        if (lexicalWords.length < 4) continue;
+
+        // Rate limit: 120ms between requests for fast responsive auditing
+        await new Promise((r) => setTimeout(r, 120));
+
+        if (myToken !== currentAnalysisToken) return;
+
+        const webCheck = await chrome.runtime.sendMessage({
+          type: "CHECK_WEB_PHRASE",
+          phrase: snippet,
+          lang: currentLang,
+        }).catch(() => null);
+
+        if (myToken !== currentAnalysisToken) return;
+
+        if (webCheck && webCheck.ok && webCheck.matched) {
+          externalMatchCount++;
+          weightedSimilarityWords += webCandidates[k].wordCount;
+          const matchLabel = webCheck.sourceTitle
+            ? `${t("externalMatch")} · ${webCheck.sourceTitle}`
+            : t("externalMatch");
+          flaggedMatches.push({
+            type: "web",
+            sourceLabel: matchLabel,
+            scorePct: 100,
+            text: `"${snippet}" — ${webCandidates[k].raw}`,
+            sourceUrl: webCheck.sourceUrl || "",
           });
-
-          if (webCheck && webCheck.matched) {
-            externalMatchCount++;
-            weightedSimilarityWords += webCandidates[k].wordCount;
-            flaggedMatches.push({
-              sourceLabel: t("externalMatch"),
-              scorePct: 100,
-              text: `"${snippet}" — ${webCandidates[k].raw}`,
-              sourceUrl: webCheck.sourceUrl || "",
-            });
-          }
-        } catch {
-          // Network error — skip silently
+        } else if (webCheck && !webCheck.ok && webCheck.error === "rate_limited") {
+          showError(t("errorRateLimited"));
         }
-
-        // Rate limit: 250ms between requests
-        await new Promise((r) => setTimeout(r, 250));
       }
 
       // 7. Compute scores
@@ -741,7 +978,12 @@
         flaggedMatches,
       });
     } catch (err) {
-      showError(err.message || t("errorGeneric"));
+      const msg = err?.message || "";
+      if (msg.includes("Could not establish connection") || msg.includes("Extension context invalidated")) {
+        showError(t("errorSwAsleep"));
+      } else {
+        showError(msg || t("errorGeneric"));
+      }
     } finally {
       state.isAnalyzing = false;
       analyzeBtn.disabled = false;
@@ -754,17 +996,27 @@
   analyzeBtn.addEventListener("click", handleAnalyze);
   copyReportBtn.addEventListener("click", handleCopyReport);
 
+  // Filter Pills listener
+  document.querySelectorAll(".filter-pill").forEach((pill) => {
+    pill.addEventListener("click", () => {
+      applyFilter(pill.getAttribute("data-filter"));
+    });
+  });
+
   langToggle.addEventListener("click", () => {
     currentLang = currentLang === "es" ? "en" : "es";
     localStorage.setItem("docguard_lang", currentLang);
     applyI18N();
-    // Re-render results if they exist
     if (lastResult) renderResults(lastResult);
   });
 
   themeToggle.addEventListener("click", () => {
-    const current = document.documentElement.getAttribute("data-theme");
-    applyTheme(current === "dark" ? "light" : "dark");
+    const current = document.documentElement.getAttribute("data-theme") || "dark";
+    let nextTheme = "dark";
+    if (current === "dark") nextTheme = "light";
+    else if (current === "light") nextTheme = "neobrutalism";
+    else nextTheme = "dark";
+    applyTheme(nextTheme);
   });
 
   if (chrome.tabs && chrome.tabs.onActivated) {

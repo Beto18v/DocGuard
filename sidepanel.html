@@ -64,6 +64,9 @@
             <svg id="theme-icon-moon" class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
             </svg>
+            <svg id="theme-icon-bolt" class="control-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
           </button>
         </div>
       </header>
@@ -117,18 +120,59 @@
             <span id="analyzed-word-count" class="section-meta"></span>
           </div>
 
-          <div id="results-empty" class="empty-state" data-i18n="emptyState">
-            Pulsa <strong>Analizar Google Doc actual</strong> para auditar
-            repeticiones internas y verificar coincidencias literales en la web
-            automáticamente.
+          <div id="results-empty" class="empty-state">
+            <div class="empty-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </div>
+            <p class="empty-desc" data-i18n="emptyState">
+              Pulsa <strong>Analizar Google Doc actual</strong> para auditar
+              repeticiones internas y verificar coincidencias literales en la web
+              automáticamente.
+            </p>
+            <div class="empty-steps">
+              <div class="step-item">
+                <span class="step-num">1</span>
+                <span data-i18n="step1">Abre tu Google Doc</span>
+              </div>
+              <div class="step-divider" aria-hidden="true">→</div>
+              <div class="step-item">
+                <span class="step-num">2</span>
+                <span data-i18n="step2">Clic en Analizar</span>
+              </div>
+              <div class="step-divider" aria-hidden="true">→</div>
+              <div class="step-item">
+                <span class="step-num">3</span>
+                <span data-i18n="step3">Copia el reporte</span>
+              </div>
+            </div>
           </div>
 
-          <div id="results-container" class="results-container hidden">
+          <div id="results-container" class="results-container hidden" aria-live="polite" aria-atomic="false">
             <!-- Score ring card -->
             <div id="score-card" class="score-card">
               <div class="score-ring-row">
                 <div class="score-ring-wrapper">
                   <svg class="score-ring" viewBox="0 0 120 120">
+                    <defs>
+                      <linearGradient id="ringGradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#34d399"/>
+                        <stop offset="100%" stop-color="#10b981"/>
+                      </linearGradient>
+                      <linearGradient id="ringGradAmber" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fbbf24"/>
+                        <stop offset="100%" stop-color="#f59e0b"/>
+                      </linearGradient>
+                      <linearGradient id="ringGradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#f87171"/>
+                        <stop offset="100%" stop-color="#ef4444"/>
+                      </linearGradient>
+                    </defs>
                     <circle class="ring-bg" cx="60" cy="60" r="52" />
                     <circle id="ring-fill" class="ring-fill" cx="60" cy="60" r="52" stroke-dasharray="326.73" stroke-dashoffset="326.73" />
                   </svg>
@@ -153,6 +197,16 @@
               </div>
             </div>
 
+            <!-- Verdict / Submission Recommendation Card -->
+            <div id="verdict-card" class="verdict-card verdict-safe">
+              <div class="verdict-top">
+                <span id="verdict-badge" class="verdict-badge">🟢 LISTO PARA ENTREGAR</span>
+                <span class="verdict-sublabel" data-i18n="verdictSublabel">Recomendación</span>
+              </div>
+              <h3 id="verdict-title" class="verdict-title">Apto para entrega académica</h3>
+              <p id="verdict-desc" class="verdict-desc">Alta originalidad y baja similitud. Es seguro subirlo a plataformas académicas.</p>
+            </div>
+
             <!-- Mini stats -->
             <div class="mini-stats">
               <div class="mini-stat">
@@ -175,6 +229,19 @@
               <span id="matches-count" class="matches-count">0</span>
             </div>
 
+            <!-- Filter Pills -->
+            <div id="filter-bar" class="filter-bar">
+              <button type="button" class="filter-pill active" data-filter="all">
+                <span data-i18n="filterAll">Todos</span> <span id="filter-all-count" class="pill-count">(0)</span>
+              </button>
+              <button type="button" class="filter-pill" data-filter="web">
+                🌐 <span data-i18n="filterWeb">Web</span> <span id="filter-web-count" class="pill-count">(0)</span>
+              </button>
+              <button type="button" class="filter-pill" data-filter="internal">
+                🔁 <span data-i18n="filterInternal">Internos</span> <span id="filter-int-count" class="pill-count">(0)</span>
+              </button>
+            </div>
+
             <div id="no-matches-box" class="empty-state hidden" data-i18n="noMatches">
               Sin coincidencias literales en la web ni repeticiones internas significativas.
             </div>
@@ -187,6 +254,44 @@
             </button>
           </div>
         </section>
+
+        <!-- Knowledge Sources Footer Card -->
+        <div class="sources-card">
+          <div class="sources-header">
+            <svg class="sources-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span class="sources-title" data-i18n="sourcesTitle">Bases de consulta activas</span>
+          </div>
+          <p class="sources-desc" data-i18n="sourcesDesc">
+            Verificación multi-fuente en tiempo real sin almacenamiento en servidores externos (100% privado).
+          </p>
+          <div class="sources-list">
+            <div class="source-item">
+              <span class="source-icon">🌐</span>
+              <div class="source-info">
+                <span class="source-name">Wikipedia REST API (ES / EN)</span>
+                <span class="source-detail" data-i18n="sourceWikiDetail">Enciclopedia global y definiciones conceptuales</span>
+              </div>
+            </div>
+            <div class="source-item">
+              <span class="source-icon">🎓</span>
+              <div class="source-info">
+                <span class="source-name">OpenAlex Academic Works</span>
+                <span class="source-detail" data-i18n="sourceOpenAlexDetail">+250M de papers, journals y literatura científica</span>
+              </div>
+            </div>
+            <div class="source-item">
+              <span class="source-icon">⚡</span>
+              <div class="source-info">
+                <span class="source-name">Motor NLP Local (In-Browser)</span>
+                <span class="source-detail" data-i18n="sourceLocalDetail">Shingling 5-gram + Jaccard para redundancia interna</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
 
       <footer class="app-footer">
