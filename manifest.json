@@ -8,8 +8,7 @@
     "https://docs.google.com/*",
     "https://*.googleusercontent.com/*",
     "https://*.wikipedia.org/*",
-    "https://api.openalex.org/*",
-    "https://html.duckduckgo.com/*"
+    "https://api.openalex.org/*"
   ],
   "background": {
     "service_worker": "background.js"
