@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "DocGuard",
+  "default_locale": "en",
+  "name": "__MSG_appName__",
   "version": "2.0.0",
-  "description": "Free originality auditor for Google Docs — hybrid local + web engine, no API keys.",
+  "description": "__MSG_appDesc__",
   "permissions": ["activeTab", "tabs", "sidePanel"],
   "host_permissions": [
     "https://docs.google.com/*",
