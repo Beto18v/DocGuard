@@ -368,6 +368,7 @@
       /^[A-ZÁÉÍÓÚÑ\s\(\)\-]{3,150}$/, // All-caps headers y títulos institucionales
       /^(ÍNDICE|INDICE|TABLA DE CONTENIDO|TABLE OF CONTENTS)\b/i, // Encabezado de índice
       /(?:\.{2,}|\s{2,})\s*\d+\s*$/, // Líneas de índice con puntos y número de página (ej. '... 4', '... 6')
+      /^(Reporte\s+T[ée]cnico|Aplicaci[oó]n\s+ABP|Proyecto\s+de\s+Aula|Trabajo\s+de\s+Grado)\b/i, // Subtítulos de portada / trabajo institucional
     ];
 
     for (const block of blocks) {

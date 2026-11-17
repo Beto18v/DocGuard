@@ -85,11 +85,17 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     // Layer B: OpenAlex Academic Papers & Research (250M+ scientific publications)
     const queryOpenAlex = async (queryPhrase) => {
       try {
-        const url = `https://api.openalex.org/works?search=${encodeURIComponent(queryPhrase)}&per_page=1&mailto=docguard.open@gmail.com`;
+        const cleanPhrase = queryPhrase.replace(/["\\]/g, "").trim();
+        const quoted = `"${cleanPhrase}"`;
+        const url = `https://api.openalex.org/works?search=${encodeURIComponent(quoted)}&per_page=1&mailto=docguard.open@gmail.com`;
         const res = await fetch(url);
-        if (!res.ok) return null;
+        if (!res.ok) {
+          if (res.status === 429) return { ok: false, error: "rate_limited" };
+          return null;
+        }
         const data = await res.json();
-        if (data.results && data.results.length > 0) {
+        const count = data.meta?.count || 0;
+        if (count > 0 && data.results && data.results.length > 0) {
           const top = data.results[0];
           if (top.title) {
             const paperUrl = top.doi || top.id || `https://openalex.org/${top.id}`;
