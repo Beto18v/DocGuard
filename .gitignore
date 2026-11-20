@@ -1,8 +1,11 @@
+# Dependencies
+node_modules/
+
+# WXT build artifacts
+.output/
+.wxt/
+
+# OS and temp files
 .DS_Store
 Thumbs.db
-.vscode/
-.idea/
-*.zip
-node_modules/
 *.log
-

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eclipse — Dark Mode</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="popup-container">
+      <header class="header">
+        <div class="logo">
+          <span class="icon">🌙</span>
+          <span class="title">Eclipse</span>
+        </div>
+        <span class="badge">Universal</span>
+      </header>
+
+      <main class="content">
+        <!-- Global Switch -->
+        <div class="switch-row">
+          <div class="label-group">
+            <span class="main-label">Dark Mode Global</span>
+            <span class="sub-label">Activar en toda la web</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="global-toggle" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- Site Switch -->
+        <div class="switch-row site-row">
+          <div class="label-group">
+            <span class="main-label" id="site-label">Sitio actual</span>
+            <span class="sub-label" id="site-sublabel">detectando...</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="site-toggle" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <div class="shortcut">
+          <span>Atajo rápido:</span>
+          <kbd>Alt + Shift + D</kbd>
+        </div>
+      </footer>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

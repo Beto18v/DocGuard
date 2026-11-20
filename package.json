@@ -1,0 +1,14 @@
+{
+  "name": "browser-extensions-suite",
+  "version": "1.0.0",
+  "description": "Suite of modular, production-ready browser extensions built with WXT, Manifest V3, TypeScript, and Vite.",
+  "scripts": {
+    "test:docguard": "node extensions/docguard/test/run-tests.js",
+    "build:dark-mode": "npm --prefix extensions/dark-mode run build",
+    "zip:dark-mode": "npm --prefix extensions/dark-mode run zip",
+    "dev:dark-mode": "npm --prefix extensions/dark-mode run dev"
+  },
+  "keywords": ["browser-extension", "wxt", "vite", "typescript", "manifest-v3", "chrome-extension", "edge-addon"],
+  "author": "Nicolas Valenzuela (Beto18v)",
+  "license": "MIT"
+}
