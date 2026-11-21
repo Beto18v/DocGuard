@@ -144,6 +144,9 @@ input:checked + .slider:before {
 .footer {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .shortcut {
@@ -152,6 +155,29 @@ input:checked + .slider:before {
   justify-content: space-between;
   font-size: 11px;
   color: #8b949e;
+}
+
+.branding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #8b949e;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+}
+
+.branding a {
+  color: #14b8a6;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.branding a:hover {
+  text-decoration: underline;
+  color: #2dd4bf;
 }
 
 kbd {

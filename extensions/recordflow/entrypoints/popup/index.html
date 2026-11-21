@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RecordFlow</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="popup-wrapper">
+      <!-- Header -->
+      <header class="header">
+        <div class="brand">
+          <div class="brand-icon">
+            <span class="rec-dot-header"></span>
+          </div>
+          <div class="brand-text">
+            <span class="title">RecordFlow</span>
+            <span class="badge" data-i18n="unlimited_badge">100% Local • Ilimitado</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="lang-btn" class="btn-lang" title="Cambiar idioma / Switch language">
+            🌐 <span id="lang-label">ES</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Tab Navigation -->
+      <nav class="nav-tabs">
+        <button id="tab-record-btn" class="nav-tab active" data-i18n="tab_record">
+          🎥 Grabador
+        </button>
+        <button id="tab-recent-btn" class="nav-tab" data-i18n="tab_recent">
+          📁 Grabaciones <span id="recordings-count-badge" class="count-pill">0</span>
+        </button>
+      </nav>
+
+      <!-- View 1: Recorder Panel -->
+      <main id="view-record" class="view-panel active">
+        <!-- Status indicator bar -->
+        <div id="status-bar" class="status-bar ready">
+          <div class="status-indicator">
+            <span class="status-dot"></span>
+            <span id="status-text" data-i18n="status_ready">Listo para grabar</span>
+          </div>
+          <div id="live-timer-badge" class="live-timer hidden">
+            ⏱️ <span id="live-timer-text">00:00</span>
+          </div>
+        </div>
+
+        <!-- Mode Selector -->
+        <div class="section-group">
+          <label class="section-label" data-i18n="meta_mode">Modo de grabación</label>
+          <div class="mode-grid">
+            <button class="mode-card active" data-mode="screen-camera" id="mode-screen-camera">
+              <span class="mode-icon">🖥️+📹</span>
+              <span class="mode-name" data-i18n="mode_screen_camera">Pantalla + Cámara</span>
+            </button>
+            <button class="mode-card" data-mode="screen" id="mode-screen">
+              <span class="mode-icon">🖥️</span>
+              <span class="mode-name" data-i18n="mode_screen_only">Solo Pantalla</span>
+            </button>
+            <button class="mode-card" data-mode="camera" id="mode-camera">
+              <span class="mode-icon">📹</span>
+              <span class="mode-name" data-i18n="mode_camera_only">Solo Cámara</span>
+            </button>
+          </div>
+          <p id="mode-description" class="mode-caption" data-i18n="mode_screen_camera_desc">
+            Graba la pantalla con tu cámara en burbuja circular flotante.
+          </p>
+        </div>
+
+        <!-- Audio Configuration -->
+        <div class="section-group">
+          <div class="switch-row">
+            <div class="switch-info">
+              <span class="switch-icon">🎙️</span>
+              <div class="switch-texts">
+                <span class="switch-title" data-i18n="audio_mic_label">Micrófono</span>
+                <span id="mic-status-label" class="switch-subtitle" data-i18n="audio_mic_active">Activo</span>
+              </div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="mic-toggle" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Error / Warning Banner -->
+        <div id="error-banner" class="alert-banner hidden">
+          <span class="alert-icon">⚠️</span>
+          <span id="error-message" class="alert-text"></span>
+        </div>
+
+        <!-- Prominent Record Action Button -->
+        <div class="action-container">
+          <button id="record-cta-btn" class="btn-cta btn-start">
+            <span class="cta-icon">⏺️</span>
+            <span id="cta-label" data-i18n="btn_start_recording">Iniciar Grabación</span>
+          </button>
+          <div class="studio-direct-container">
+            <button id="btn-open-universal-studio" type="button" class="btn-studio-link">
+              <span class="link-icon">🌐</span>
+              <span data-i18n="open_universal_studio">O abrir Estudio Universal para grabar cualquier app</span>
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <!-- View 2: Recent Recordings Panel -->
+      <main id="view-recent" class="view-panel hidden">
+        <div id="recent-list-container" class="recent-list">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div id="recent-empty" class="empty-state hidden">
+          <span class="empty-icon">🎬</span>
+          <h4 data-i18n="no_recordings_title">No hay grabaciones guardadas</h4>
+          <p data-i18n="no_recordings_desc">
+            Tus videos se guardan 100% en tu navegador, sin límites ni nubes de terceros.
+          </p>
+        </div>
+      </main>
+
+      <!-- Footer Branding -->
+      <footer class="footer">
+        <div class="author-credits">
+          <span data-i18n="developed_by">Desarrollado por</span>
+          <a href="https://nival.is-a.dev/" target="_blank" rel="noopener noreferrer">Nicolás Valenzuela</a>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

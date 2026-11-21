@@ -7,31 +7,35 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <div class="app-shell">
       <!-- ─── Top Bar ─── -->
       <header class="topbar">
         <div class="brand">
-          <svg
-            class="brand-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            <path d="m9 12 2 2 4-4" />
-          </svg>
-          <span class="brand-name">DocGuard</span>
-          <span class="brand-badge">MV3</span>
+          <div class="brand-icon-wrapper">
+            <svg
+              class="brand-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">DocGuard</span>
+            <span class="brand-badge">v2.1 · WXT</span>
+          </div>
         </div>
         <div class="topbar-controls">
           <button
@@ -94,7 +98,10 @@
           <div id="doc-info-box" class="doc-card">
             <div class="doc-meta-row">
               <span class="meta-label" data-i18n="statusLabel">Estado</span>
-              <span id="doc-status-text" class="meta-value status-idle" data-i18n="statusDetecting">Detectando pestaña…</span>
+              <div class="status-indicator-wrap">
+                <span id="doc-status-dot" class="status-dot status-idle"></span>
+                <span id="doc-status-text" class="meta-value status-idle" data-i18n="statusDetecting">Detectando pestaña…</span>
+              </div>
             </div>
             <div class="doc-meta-row">
               <span class="meta-label" data-i18n="titleLabel">Título</span>
@@ -106,7 +113,7 @@
             </div>
           </div>
 
-          <button id="analyze-btn" type="button" class="btn-primary" data-i18n="analyzeBtn">
+          <button id="analyze-btn" type="button" class="btn-primary" data-i18n="analyzeBtn" disabled>
             Analizar Google Doc actual
           </button>
 
@@ -223,10 +230,12 @@
               </div>
             </div>
 
-            <!-- Matches -->
+            <!-- Matches Section Header -->
             <div id="matches-header" class="matches-header">
-              <span data-i18n="matchesTitle">Hallazgos detectados</span>
-              <span id="matches-count" class="matches-count">0</span>
+              <div class="matches-header-left">
+                <span data-i18n="matchesTitle">Hallazgos detectados</span>
+                <span id="matches-count" class="matches-count">0</span>
+              </div>
             </div>
 
             <!-- Filter Pills -->
@@ -255,7 +264,7 @@
           </div>
         </section>
 
-        <!-- Knowledge Sources Footer Card -->
+        <!-- Knowledge Sources Card -->
         <div class="sources-card">
           <div class="sources-header">
             <svg class="sources-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -299,6 +308,7 @@
         <a href="https://nival.is-a.dev/" target="_blank" rel="noopener noreferrer">Nicolás Valenzuela</a>
       </footer>
     </div>
-    <script src="sidepanel.js"></script>
+
+    <script type="module" src="./main.ts"></script>
   </body>
 </html>

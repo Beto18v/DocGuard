@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RecordFlow Studio — Grabador Universal</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="studio-layout">
+      <!-- Studio Header -->
+      <header class="studio-header">
+        <div class="header-brand">
+          <div class="brand-badge">
+            <span class="rec-dot-animated"></span>
+            <span class="brand-name" data-i18n="universal_studio_title">RecordFlow Studio — Grabador Universal</span>
+          </div>
+          <div class="feature-pills">
+            <span class="pill highlight" id="active-mode-badge">🖥️+📹 Pantalla + Cámara</span>
+            <span class="pill" data-i18n="unlimited_badge">100% Local • Ilimitado</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button id="lang-btn" class="btn-lang" title="Cambiar idioma / Switch language">
+            🌐 <span id="lang-label">ES</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Stage -->
+      <main class="studio-main">
+        <!-- Active Recording Stage View -->
+        <div id="recording-active-view" class="recording-stage">
+          <div class="recording-card">
+            <!-- Top Status Row -->
+            <div class="card-status-row">
+              <div class="status-badge-live">
+                <span class="live-pulse-dot"></span>
+                <span id="status-badge-text" data-i18n="universal_status_recording">🔴 Grabando pantalla...</span>
+              </div>
+              <div class="timer-badge-live">
+                <span id="live-timer-text">⏱️ 00:00</span>
+              </div>
+            </div>
+
+            <!-- Animated Visual Radar / Center Indicator -->
+            <div class="visual-radar-container">
+              <div class="radar-circle circle-3"></div>
+              <div class="radar-circle circle-2"></div>
+              <div class="radar-circle circle-1"></div>
+              <div class="radar-center-icon">
+                <span id="center-mode-icon">🖥️</span>
+              </div>
+            </div>
+
+            <!-- Big Monospace Timer Display -->
+            <div class="timer-jumbo-container">
+              <span id="jumbo-timer" class="jumbo-timer">00:00</span>
+            </div>
+
+            <!-- Universal Recording Instructions Box -->
+            <div class="instructions-box">
+              <div class="instructions-icon">💡</div>
+              <div class="instructions-content">
+                <p class="instructions-text" data-i18n="universal_instructions">
+                  Puedes minimizar esta pestaña y trabajar en cualquier aplicación de tu equipo (VS Code, terminal, juegos, etc.). Cuando termines, haz clic en Detener o usa el botón 'Dejar de compartir' de Chrome.
+                </p>
+              </div>
+            </div>
+
+            <!-- Prominent Finish Button -->
+            <div class="card-actions">
+              <button id="btn-stop-recording" class="btn-finish-universal">
+                <span class="stop-icon-box">⏹️</span>
+                <span data-i18n="universal_btn_stop_save">Detener y Guardar Grabación</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Standby / Retry Stage View -->
+        <div id="recording-standby-view" class="standby-stage hidden">
+          <div class="standby-card">
+            <div class="standby-icon">🎥</div>
+            <h2 id="standby-title" data-i18n="universal_prompt_title">Estudio de Grabación Universal</h2>
+            <p id="standby-desc" data-i18n="universal_prompt_desc">
+              Graba cualquier aplicación, ventana o tu pantalla completa sin restricciones.
+            </p>
+            <div class="standby-actions">
+              <button id="btn-start-share" class="btn-primary-start">
+                <span id="btn-start-share-label" data-i18n="universal_btn_start_share">🚀 Seleccionar Pantalla y Comenzar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer Branding -->
+      <footer class="studio-footer">
+        <div class="footer-content">
+          <span>RecordFlow v1.0 •</span>
+          <span data-i18n="developed_by">Desarrollado por</span>
+          <a href="https://nival.is-a.dev/" target="_blank" rel="noopener noreferrer">Nicolás Valenzuela</a>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

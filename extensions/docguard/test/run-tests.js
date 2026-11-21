@@ -4,7 +4,7 @@
  * Run with: node test/run-tests.js
  */
 
-const assert = require("assert");
+import assert from "node:assert";
 
 // ─── Colors for terminal output ───
 const GREEN = "\x1b[32m";
@@ -189,8 +189,8 @@ async function runTests() {
 
   await itAsync("OpenAlex Academic API should be queried with graceful fallback on rate limits", async () => {
     const res = await fetch(`https://api.openalex.org/works?search=neural+networks&per_page=1&mailto=docguard.open@gmail.com`);
-    // OpenAlex devuelve 200 (éxito) o 429 (rate-limit transitorio que el motor absorbe limpiamente)
-    assert.ok(res.status === 200 || res.status === 429);
+    // OpenAlex devuelve 200 (éxito), 429 (rate-limit) o 503 (indisponibilidad temporal que el motor absorbe limpiamente)
+    assert.ok(res.status === 200 || res.status === 429 || res.status === 503);
   });
 
   // ─── FINAL SUMMARY ───
